@@ -1,7 +1,12 @@
 import streamlit as st
+import pandas as pd
 from datetime import date
 
-from database.net_worth import insert_net_worth_snapshot, get_latest_snapshot
+from database.net_worth import (
+    insert_net_worth_snapshot,
+    get_latest_snapshot,
+    get_all_snapshots,
+)
 from utils.calculations import (
     calculate_total_assets,
     calculate_total_liabilities,
@@ -70,9 +75,52 @@ def render_net_worth_page():
             insert_net_worth_snapshot(data)
             st.success("Net worth snapshot saved.")
 
-    latest_snapshot = get_latest_snapshot()
+    snapshots = get_all_snapshots()
 
-    if latest_snapshot:
+    if snapshots:
         st.markdown("---")
-        st.subheader("Latest Saved Snapshot")
-        st.write(latest_snapshot)
+        st.subheader("Net Worth History")
+
+        rows = []
+
+        for snapshot in snapshots:
+            total_assets = calculate_total_assets(snapshot)
+            total_liabilities = calculate_total_liabilities(snapshot)
+            net_worth = calculate_net_worth(snapshot)
+
+            rows.append({
+                "Date": snapshot["snapshot_date"],
+                "Total Assets": total_assets,
+                "Total Liabilities": total_liabilities,
+                "Net Worth": net_worth,
+            })
+
+        df = pd.DataFrame(rows)
+
+        df["Weekly Growth"] = df["Net Worth"].diff()
+        df["Weekly Growth %"] = df["Net Worth"].pct_change() * 100
+
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        latest_net_worth = df["Net Worth"].iloc[-1]
+        previous_net_worth = df["Net Worth"].iloc[-2] if len(df) > 1 else None
+
+        st.markdown("### Current Position")
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Latest Net Worth", f"€{latest_net_worth:,.2f}")
+
+        if previous_net_worth is not None:
+            growth = latest_net_worth - previous_net_worth
+            col2.metric("Weekly Growth", f"€{growth:,.2f}")
+        else:
+            col2.metric("Weekly Growth", "No previous data")
+
+        col3.metric("Snapshots", len(df))
+    else:
+        st.info("No net worth snapshots saved yet.")
