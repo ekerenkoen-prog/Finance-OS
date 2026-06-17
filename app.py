@@ -1,4 +1,5 @@
 import streamlit as st
+from database.supabase import get_supabase_client
 
 st.set_page_config(
     page_title="Finance OS",
@@ -8,6 +9,12 @@ st.set_page_config(
 
 st.sidebar.title("Finance OS")
 st.sidebar.caption("Building Financial Freedom")
+
+try:
+    supabase = get_supabase_client()
+    st.sidebar.success("Supabase connected")
+except Exception as e:
+    st.sidebar.error(f"Supabase error: {e}")
 
 page = st.sidebar.radio(
     "Navigation",
