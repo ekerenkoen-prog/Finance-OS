@@ -6,5 +6,37 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("Finance OS")
-st.caption("Building Financial Freedom")
+st.sidebar.title("Finance OS")
+st.sidebar.caption("Building Financial Freedom")
+
+page = st.sidebar.radio(
+    "Navigation",
+    [
+        "Dashboard",
+        "Net Worth",
+        "Cashflow",
+        "Investments",
+        "Goals",
+        "FIRE",
+    ]
+)
+
+st.title(page)
+
+if page == "Dashboard":
+    st.write("Overview of your financial system.")
+
+elif page == "Net Worth":
+    st.write("Track your total assets, liabilities, and net worth.")
+
+elif page == "Cashflow":
+    st.write("Track income, expenses, savings rate, and investment rate.")
+
+elif page == "Investments":
+    st.write("Track ETFs, stocks, crypto, and allocation.")
+
+elif page == "Goals":
+    st.write("Track financial goals and progress.")
+
+elif page == "FIRE":
+    st.write("Calculate financial independence scenarios.")
