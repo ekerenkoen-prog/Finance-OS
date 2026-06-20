@@ -117,13 +117,34 @@ def render_cashflow_page():
             })
 
         df = pd.DataFrame(rows)
+        df["Start"] = pd.to_datetime(df["Start"])
+        df = df.sort_values("Start")
+
+        st.markdown("### Cashflow Trend")
+
+        st.line_chart(
+            df,
+            x="Start",
+            y="Cashflow",
+            use_container_width=True,
+        )
+
+        st.markdown("### Income vs Expenses")
+
+        st.line_chart(
+            df,
+            x="Start",
+            y=["Income", "Expenses"],
+            use_container_width=True,
+        )
+
+        st.markdown("### Cashflow History")
 
         st.dataframe(
             df,
             use_container_width=True,
             hide_index=True,
         )
-
         latest = df.iloc[-1]
 
         st.markdown("### Latest Cashflow Position")
