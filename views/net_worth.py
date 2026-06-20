@@ -4,7 +4,6 @@ from datetime import date
 
 from database.net_worth import (
     insert_net_worth_snapshot,
-    get_latest_snapshot,
     get_all_snapshots,
 )
 from utils.calculations import (
@@ -96,9 +95,22 @@ def render_net_worth_page():
             })
 
         df = pd.DataFrame(rows)
+        df["Date"] = pd.to_datetime(df["Date"])
+        df = df.sort_values("Date")
 
         df["Weekly Growth"] = df["Net Worth"].diff()
         df["Weekly Growth %"] = df["Net Worth"].pct_change() * 100
+
+        st.markdown("### Net Worth Trend")
+
+        st.line_chart(
+            df,
+            x="Date",
+            y="Net Worth",
+            use_container_width=True,
+        )
+
+        st.markdown("### History Table")
 
         st.dataframe(
             df,
@@ -122,5 +134,6 @@ def render_net_worth_page():
             col2.metric("Weekly Growth", "No previous data")
 
         col3.metric("Snapshots", len(df))
+
     else:
         st.info("No net worth snapshots saved yet.")
