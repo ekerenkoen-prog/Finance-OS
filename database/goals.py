@@ -44,3 +44,16 @@ def get_completed_goals():
         goal for goal in goals
         if goal.get("status") == "Completed"
     ]
+
+def update_goal(goal_id: str, data: dict):
+    supabase = get_supabase_client()
+
+    response = (
+        supabase
+        .table("goals")
+        .update(data)
+        .eq("id", goal_id)
+        .execute()
+    )
+
+    return response
