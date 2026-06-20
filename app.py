@@ -1,6 +1,7 @@
 import streamlit as st
 from database.supabase import get_supabase_client
 from views.net_worth import render_net_worth_page
+from views.cashflow import render_cashflow_page
 
 st.set_page_config(
     page_title="Finance OS",
@@ -38,7 +39,7 @@ elif page == "Net Worth":
     render_net_worth_page()
 
 elif page == "Cashflow":
-    st.write("Track income, expenses, savings rate, and investment rate.")
+    render_cashflow_page()
 
 elif page == "Investments":
     st.write("Track ETFs, stocks, crypto, and allocation.")
