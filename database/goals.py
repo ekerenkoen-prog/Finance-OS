@@ -35,4 +35,12 @@ def get_active_goals():
         goal for goal in goals
         if goal.get("status") == "Active"
     ]
-    
+
+
+def get_completed_goals():
+    goals = get_all_goals()
+
+    return [
+        goal for goal in goals
+        if goal.get("status") == "Completed"
+    ]
