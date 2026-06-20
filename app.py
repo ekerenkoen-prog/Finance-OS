@@ -3,6 +3,7 @@ from database.supabase import get_supabase_client
 from views.net_worth import render_net_worth_page
 from views.cashflow import render_cashflow_page
 from views.goals import render_goals_page
+from views.dashboard import render_dashboard_page
 
 st.set_page_config(
     page_title="Finance OS",
@@ -34,7 +35,7 @@ page = st.sidebar.radio(
 st.title(page)
 
 if page == "Dashboard":
-    st.write("Overview of your financial system.")
+    render_dashboard_page()
 
 elif page == "Net Worth":
     render_net_worth_page()
